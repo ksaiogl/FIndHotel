@@ -147,7 +147,7 @@ function saveDataToDB(filePath, collection, db, cb) {
 	var count1 = 0;
 	var unCount = 0;
 	var duplicateCount = 0;
-
+	var wrongFormatCount = 0;
 
 	csv.fromPath(filePath, {
 			headers: true
@@ -156,6 +156,7 @@ function saveDataToDB(filePath, collection, db, cb) {
 			console.log("count: " + (++count));
 			var validation_result = validator.validate(data, rowValidation);
 			if (validation_result.errors.length > 0) {
+				++wrongFormatCount;
 				++errCount;
 				console.log("inside errors");
 				next(null);
@@ -171,6 +172,7 @@ function saveDataToDB(filePath, collection, db, cb) {
 						if ("upserted" in response.result && response.result.upserted.length > 0) {
 							++sucCount;
 						} else {
+							++errCount;
 							++duplicateCount;
 						}
 						// sucCount = sucCount + 1;
@@ -186,6 +188,7 @@ function saveDataToDB(filePath, collection, db, cb) {
 			console.log('total num of records : ' + count);
 			console.log('total num of records inserted: ' + sucCount);
 			console.log('total num of records rejeted: ' + errCount);
+			console.log('total num of records with wrong format: ' + wrongFormatCount);
 			console.log('total num of records duplicate records: ' + duplicateCount);
 			db.close();
 			return cb(false, null);

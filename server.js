@@ -40,7 +40,7 @@ if (env === "prd") {
 	//loc
 	app.listen(8083);
 	console.log('Listening on port 8083');
-	importData.importData("./SourceData/data_dump.csv", "Test",function(err, result){
+	importData.importData("./SourceData/dummy_data.csv", "Test",function(err, result){
 		if(err){
 			console.log("Error - File uploading file " + err + result);
 		}	
