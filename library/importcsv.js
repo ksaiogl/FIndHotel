@@ -144,8 +144,6 @@ function saveDataToDB(filePath, collection, db, cb) {
 	var errCount = 0;
 	var sucCount = 0;
 	var count = 0;
-	var count1 = 0;
-	var unCount = 0;
 	var duplicateCount = 0;
 	var wrongFormatCount = 0;
 
