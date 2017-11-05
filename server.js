@@ -11,8 +11,13 @@ var config = require('./config.js');
 var importData = require('./library/importcsv.js');
 //var log = require('./Environment/log4js.js');
 var bodyParser = require('body-parser');
-app.use(bodyParser.json({limit: '5mb'}));
-app.use(bodyParser.urlencoded({ limit: '20mb', extended: true }));
+app.use(bodyParser.json({
+	limit: '5mb'
+}));
+app.use(bodyParser.urlencoded({
+	limit: '20mb',
+	extended: true
+}));
 
 
 
@@ -21,7 +26,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 //CORS issue in the Browser.
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
 	res.header("Access-Control-Allow-Origin", req.headers.origin);
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
 	res.header("Access-Control-Allow-Methods", "POST, GET, PUT, OPTIONS");
@@ -31,20 +36,19 @@ app.use(function(req, res, next) {
 
 //Routing
 app.use('/', routes);
-app.use('/getIPDetails',getIPDetails);
+app.use('/getIPDetails', getIPDetails);
 
 if (env === "prd") {
 	app.listen(8080);
 	console.log('Listening on port 8080');
-}else{
+} else {
 	//loc
 	app.listen(8083);
 	console.log('Listening on port 8083');
-	importData.importData("./SourceData/dummy_data.csv", "Test",function(err, result){
-		if(err){
+	importData.importData("./SourceData/dummy_data.csv", "Test", (err, result) => {
+		if (err) {
 			console.log("Error - File uploading file " + err + result);
-		}	
-		else{
+		} else {
 			console.log("File uploaded successfully");
 		}
 	});

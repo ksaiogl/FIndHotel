@@ -11,19 +11,19 @@ var csv = require('fast-csv');
 var V = require('jsonschema').Validator;
 var validator = new V();
 var rowValidation = require('./validation.js').rowValidation;
-var ElapsedTime = require('elapsed-time')
+var ElapsedTime = require('elapsed-time');
 
 
-exports.importData = function (filePath, collection, callback) {
+exports.importData = (filePath, collection, callback) => {
 	var et = ElapsedTime.new().start();
 	// Read in airport data from csv file and write it to database.
 	async.waterfall([
-		async.apply(readCSV, filePath),
+		// async.apply(readCSV, filePath),
 		//validateFileExt,
-		parseCSV,
+		// parseCSV,
 		connectMongo,
 		async.apply(saveDataToDB, filePath, collection)
-	], function (err, result) {
+	], (err, result) => {
 		if (err) {
 			console.log(result);
 			return callback(true, "failure");
@@ -34,11 +34,11 @@ exports.importData = function (filePath, collection, callback) {
 };
 
 // Validate extension and read csv file.
-function readCSV(filePath, cb) {
+var readCSV = (filePath, cb) => {
 	console.log("readCSV");
 	var extname = path.parse(filePath).ext;
 	if (extname == ".csv") {
-		fs.readFile(filePath, function (err, data) {
+		fs.readFile(filePath, (err, data) => {
 			if (err) {
 				return cb(true, err);
 			}
@@ -47,21 +47,21 @@ function readCSV(filePath, cb) {
 	} else {
 		return cb(true, "No files with .csv found");
 	}
-}
+};
 
 // parse airports csv
-function parseCSV(data, cb) {
+var parseCSV = (data, cb) => {
 	console.log("parseCSV");
-	parse(data, function (err, parsedData) {
+	parse(data, (err, parsedData) => {
 		if (err) {
 			return cb(true, err);
 		}
 		return cb(null);
 	});
-}
+};
 
-function connectMongo(cb) {
-	dBconfig.createMongoConn(function (error) {
+var connectMongo = (cb) => {
+	dBconfig.createMongoConn((error) => {
 		if (error) {
 			console.log('Unable to load environment variables. Error:', error);
 			return cb(true, error);
@@ -71,7 +71,7 @@ function connectMongo(cb) {
 			return cb(false, db);
 		}
 	});
-}
+};
 
 // function saveDataToDB(filePath, collection, db, cb){
 // 	console.log("saveDataToDB");
@@ -139,7 +139,7 @@ function connectMongo(cb) {
 // };
 
 
-function saveDataToDB(filePath, collection, db, cb) {
+var saveDataToDB = (filePath, collection, db, cb) => {
 	console.log("saveDataToDB");
 	var errCount = 0;
 	var sucCount = 0;
@@ -152,7 +152,7 @@ function saveDataToDB(filePath, collection, db, cb) {
 	csv.fromPath(filePath, {
 			headers: true
 		})
-		.validate(function (data, next) {
+		.validate((data, next) => {
 			console.log("count: " + (++count));
 			var validation_result = validator.validate(data, rowValidation);
 			if (validation_result.errors.length > 0) {
@@ -161,7 +161,7 @@ function saveDataToDB(filePath, collection, db, cb) {
 				console.log("inside errors");
 				next(null);
 			} else {
-				config.upsertOne(collection, data, data, function (err, response) {
+				config.upsertOne(collection, data, data, (err, response) => {
 					// console.log(response.result);
 					if (err) {
 						console.log("Error inserting data");
@@ -182,9 +182,9 @@ function saveDataToDB(filePath, collection, db, cb) {
 				});
 			}
 		})
-		.on("data", function (data) {})
-		.on("end", function () {
-			console.log('end')
+		.on("data",  (data) => {})
+		.on("end",  () => {
+			console.log('end');
 			console.log('total num of records : ' + count);
 			console.log('total num of records inserted: ' + sucCount);
 			console.log('total num of records rejeted: ' + errCount);
@@ -194,4 +194,4 @@ function saveDataToDB(filePath, collection, db, cb) {
 			return cb(false, null);
 		});
 
-}
+};

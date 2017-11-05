@@ -4,7 +4,7 @@ var config = require('./mongoQurey.js');
 var dBconfig = require('./config.js');
 
 exports.getIPDetails = (IPaddress, cb) => {
-	dBconfig.createMongoConn(function (error) {
+	dBconfig.createMongoConn((error) => {
 		if (error) {
 			console.log('Unable to load environment variables. Error:', error);
 			return cb(true, error);
@@ -17,7 +17,7 @@ exports.getIPDetails = (IPaddress, cb) => {
 			var fields = {
 				"_id": 0
 			};
-			config.findOne(query, fields, null, function (err, response) {
+			config.findOne(query, fields, null, (err, response) => {
 				if (err) {
 					console.log("err" + err.stack);
 					var resJon = {

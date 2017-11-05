@@ -1,17 +1,17 @@
 var dbConfig = require('./config.js');
 var collection = "Test"
 
-exports.upsertOne = function (collection, query, updates, callback) {
+exports.upsertOne = (collection, query, updates, callback) => {
 	var db = dbConfig.mongoDbConn;
 	var fhColl = db.collection(collection);
 	fhColl.updateOne(query, updates, {
 		upsert: true
-	}, function (err, response) {
+	}, (err, response) => {
 		return callback(err, response);
 	});
 };
 
-exports.findOne = function (query, fields, options, callback) {
+exports.findOne = (query, fields, options, callback) => {
 	var db = dbConfig.mongoDbConn;
 	var fhColl = db.collection(collection);
 	options = options || {};
