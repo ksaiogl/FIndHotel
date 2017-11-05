@@ -23,7 +23,7 @@ var dbConfig = {
         "type": "singleInstance",
         "user": "",
         "pwd": "",
-        "mongod": ["127.0.0.1:27017"],
+        "mongod": ["mongo"],
         "database": "FindHotel"
     }
 };
