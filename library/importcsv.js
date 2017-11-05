@@ -12,7 +12,7 @@ var V = require('jsonschema').Validator;
 var validator = new V();
 var rowValidation = require('./validation.js').rowValidation;
 var ElapsedTime = require('elapsed-time')
-
+var _ = require('underscore');
 
 exports.importData = function (filePath, collection, callback) {
 	var et = ElapsedTime.new().start();
@@ -161,8 +161,8 @@ function saveDataToDB(filePath, collection, db, cb) {
 				console.log("inside errors");
 				next(null);
 			} else {
+				data = formatRow(data);
 				config.upsertOne(collection, data, data, function (err, response) {
-					// console.log(response.result);
 					if (err) {
 						console.log("Error inserting data");
 						errCount = errCount + 1;
@@ -171,12 +171,11 @@ function saveDataToDB(filePath, collection, db, cb) {
 					} else {
 						if ("upserted" in response.result && response.result.upserted.length > 0) {
 							++sucCount;
+							console.log("sucCount: " + sucCount);							
 						} else {
 							++errCount;
 							++duplicateCount;
 						}
-						// sucCount = sucCount + 1;
-						console.log("sucCount: " + sucCount);
 						next(null)
 					}
 				});
@@ -195,3 +194,7 @@ function saveDataToDB(filePath, collection, db, cb) {
 		});
 
 }
+
+var formatRow = (row) => {
+	return _.pick(row, 'ip_address', 'country_code', 'country', 'city', 'latitude', 'longitude', 'mystery_value');
+};
